@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import './App.css';
 
 const DEFAULT_QUERY = 'redux';
-const DEFAULT_HPP = '100'
+const DEFAULT_HPP = '100';
 
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
@@ -13,15 +13,15 @@ const PARAM_HPP = 'hitsPerPage=';
 
 const largeColumn = {
   width: '40%',
-}
+};
 
 const midColumn = {
   width: '30%',
-}
+};
 
 const smallColumn = {
   width: '10%',
-}
+};
 
 class App extends Component {
   constructor(props) {
@@ -56,7 +56,7 @@ class App extends Component {
 
     const updatedHits = [
       ...oldHits,
-      ...hits,
+      ...hits
     ];
 
     this.setState({
@@ -69,8 +69,14 @@ class App extends Component {
 
   fetchSearchTopStories(searchTerm, page = 0) {
     axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
-    .then(result => this.setSearchTopStories(result.data))
-    .catch(error => this.setState({ error }));
+      .then(result => this.setSearchTopStories(result.data))
+      .catch(error => this.setState({ error }));
+  }
+
+  componentDidMount() {
+    const { searchTerm } = this.state;
+    this.setState({ searchKey: searchTerm });
+    this.fetchSearchTopStories(searchTerm);
   }
 
   onSearchChange(event) {
@@ -94,18 +100,13 @@ class App extends Component {
 
     const isNotId = item => item.objectID !== id;
     const updatedHits = hits.filter(isNotId);
+
     this.setState({
       results: {
         ...results,
         [searchKey]: { hits: updatedHits, page }
       }
     });
-  }
-
-  componentDidMount() {
-    const { searchTerm } = this.state;
-    this.setState({ searchKey: searchTerm });
-    this.fetchSearchTopStories(searchTerm);
   }
 
   render() {
@@ -139,7 +140,7 @@ class App extends Component {
             Search
           </Search>
         </div>
-        { error
+        {error
           ? <div className="interactions">
             <p>Something went wrong.</p>
           </div>
@@ -149,7 +150,7 @@ class App extends Component {
           />
         }
         <div className="interactions">
-          <Button onClick={() => this.fetchSearchTopStories(searchTerm, page + 1)}>
+          <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
             More
           </Button>
         </div>
@@ -175,38 +176,34 @@ const Search = ({
     </button>
   </form>
 
+const Table = ({ list, onDismiss }) =>
+  <div className="table">
+    {list.map(item =>
+      <div key={item.objectID} className="table-row">
+        <span style={largeColumn}>
+          <a href={item.url}>{item.title}</a>
+        </span>
+        <span style={midColumn}>
+          {item.author}
+        </span>
+        <span style={smallColumn}>
+          {item.num_comments}
+        </span>
+        <span style={smallColumn}>
+          {item.points}
+        </span>
+        <span style={smallColumn}>
+          <Button
+            onClick={() => onDismiss(item.objectID)}
+            className="button-inline"
+          >
+            Dismiss
+          </Button>
+        </span>
+      </div>
+    )}
+  </div>
 
-const Table = ({ list, onDismiss }) => {
-  // do something
-  return (
-    <div className="table">
-      {list.map(item =>
-        <div key={item.objectID} className="table-row">
-          <span style={largeColumn}>
-            <a href={item.url}>{item.title}</a>
-          </span>
-          <span style={midColumn}>
-            {item.author}
-          </span>
-          <span style={smallColumn}>
-            {item.num_comments}
-          </span>
-          <span style={smallColumn}>
-            {item.points}
-          </span>
-          <span style={smallColumn}>
-            <Button
-              onClick={() => onDismiss(item.objectID)}
-              className="button-inline"
-            >
-              Dismiss
-            </Button>
-          </span>
-        </div>
-      )}
-    </div>
-  );
-}
 
 const Button = ({
   onClick,
@@ -220,7 +217,6 @@ const Button = ({
   >
     {children}
   </button>
-
 
 export default App;
 
