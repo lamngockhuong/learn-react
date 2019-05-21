@@ -53,7 +53,7 @@ class App extends Component {
     const oldHits = results && results[searchKey]
       ? results[searchKey].hits
       : [];
-    
+
     const updatedHits = [
       ...oldHits,
       ...hits,
@@ -84,7 +84,7 @@ class App extends Component {
     if (this.needsToSearchTopStories(searchTerm)) {
       this.fetchSearchTopStories(searchTerm);
     }
-    
+
     event.preventDefault();
   }
 
@@ -208,7 +208,7 @@ const Table = ({ list, onDismiss }) => {
   );
 }
 
-const Button = ({ 
+const Button = ({
   onClick,
   className = '',
   children,
@@ -223,3 +223,9 @@ const Button = ({
 
 
 export default App;
+
+export {
+  Button,
+  Search,
+  Table,
+};
